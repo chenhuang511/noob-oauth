@@ -20,8 +20,9 @@ const accessTokenPayload = (realm, client_id, user, session_id, auth_time) => {
     let session_state = session_id
     let azp = client_id
     let iss = constants.base_url + '/realms/' + realm
+    let typ = 'Bearer'
 
-    return {auth_time, iss, azp, session_state, realm_access, resource_access, scope, sid, preferred_username}
+    return {auth_time, iss, azp, typ, session_state, realm_access, resource_access, scope, sid, preferred_username}
 }
 
 const getAccessToken = (realm, client_id, user, session_id, auth_time) => {

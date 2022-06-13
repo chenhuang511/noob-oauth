@@ -9,6 +9,7 @@ const realms = require('./realm/realm.js')
 const idp = require('./idp/idp.js')
 const client = require('./client/client.js')
 const utils = require('./util/utils.js')
+const jwt = require('./util/jwt.js')
 
 const app = express()
 const PORT = 4000
@@ -92,14 +93,15 @@ app.post('/realms/:realm/login-actions/authenticate', ((req, res) => {
     let _client = client.exist(req.query.client_id)
     if (_user && _client) {
         let time = new Date().getTime()
-        let immediateData = {realm, client_id, username, time}
+        let session_state = req.sessionID
+        let immediateData = {realm, client_id, username, time, session_state}
         res.cookie('noob-session', utils.encrypt(JSON.stringify(immediateData)), {
             expires: new Date(Date.now() + constants.authorization_code_expiration),
             httpOnly: true
         })
         let code = utils.genUUID()
         authCodeManager.set(code, immediateData, constants.authorization_code_expiration)
-        let callbackUrl = `${_client.callback}?session_state=${req.sessionID}&code=${code}`
+        let callbackUrl = `${_client.callback}?session_state=${session_state}&code=${code}`
         res.json({url: callbackUrl})
     } else {
         res.json({error: 'Invalid user credentials'})
@@ -108,6 +110,10 @@ app.post('/realms/:realm/login-actions/authenticate', ((req, res) => {
 
 app.post('/realms/:realm/protocol/openid-connect/token', ((req, res) => {
     try {
+        //required response headers from OAuth2 protocol
+        res.set('Cache-Control', 'no-store')
+        res.set('Pragma', 'no-cache')
+
         //validate realm
         let realm = req.params['realm']
         if (realm !== realms.active)
@@ -128,17 +134,26 @@ app.post('/realms/:realm/protocol/openid-connect/token', ((req, res) => {
         //authenticate client
         let checkClient = client.authenticate(realm, client_id, client_secret)
         if (!checkClient) {
-            res.json({error: "invalid_client"})
+            res.json({error: "invalid_client", message: 'Invalid client credentials'})
             return
         }
 
         if (grant_type === 'authorization_code') {
             //check auth code
             let cache = authCodeManager.get(code)
-            if (!cache || cache.realm !== realm || cache.client_id !== client_id) {
-                res.json({error: 'invalid_grant'})
+            if (!cache) {
+                res.json({error: 'invalid_grant', message: 'Code not valid'})
                 return
             }
+            let user = idp.findUserByUsername(cache.username)
+            let session_state = cache.session_state
+            let access_token = jwt.getAccessToken(realm, client_id, user, session_state, Math.floor(cache.time / 1000))
+            let expires_in = constants.jwt_expiry_seconds
+            let token_type = constants.token_type
+            let scope = user.granted_client_scopes
+
+            res.json({access_token, token_type, expires_in, session_state, scope})
+            authCodeManager.del(code)
         }
     } catch (e) {
         console.log(e)

@@ -33,6 +33,10 @@ const authenticate = (realm, username, password) => {
     return f
 }
 
+const findUserByUsername = (username) => {
+    return users.find(u => u.username === username)
+}
+
 const register = (realm, username, password) => {
     let realm_roles = ['realm-user', `default-roles-${realm}`]
     let client_roles = [
@@ -43,4 +47,4 @@ const register = (realm, username, password) => {
     users.push({realm, username, password, realm_roles, client_roles, granted_client_scopes})
 }
 
-module.exports = {authenticate, register}
+module.exports = {authenticate, register, findUserByUsername}

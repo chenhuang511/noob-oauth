@@ -42,4 +42,5 @@ bQIDAQAB
 -----END PUBLIC KEY-----`,
     jwt_key_id: '418aa5be-e5d3-41d7-9b9b-025faca9cbd7',
     jwt_expiry_seconds: 1800,
+    token_type: 'Bearer',
 }
