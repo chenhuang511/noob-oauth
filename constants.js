@@ -2,7 +2,7 @@ module.exports = {
     base_url: 'http://localhost:4000',
     response_types_supported: ['code'],
     grant_types_supported: ['authorization_code', 'refresh_token'],
-    authorization_code_expiration: 300000,
+    authorization_code_expiration: 300000, //
     jwt_private_key: `-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCxxwXlRvxq014a
 aoRVjhYnzmLK6m7Mb+ow540jS+yfNcbXMpnLHm92PBdzu8QnJ4vW8STchfkLoAVz

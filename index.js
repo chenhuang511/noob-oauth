@@ -14,9 +14,9 @@ const jwt = require('./util/jwt.js')
 const app = express()
 const PORT = 4000
 
+//in-memory storage
 const NodeCache = require("node-cache");
 const authCodeManager = new NodeCache();
-const authCodes = {}
 
 app.use(sessions({
     secret: "ddSF9jLfmajLF629",
@@ -40,14 +40,19 @@ app.get('/realms/:realm/protocol/openid-connect/auth', ((req, res) => {
         let client_id = req.query.client_id
         let _client = client.exist(client_id)
         if (!_client) {
-            res.sendStatus(400)
+            res.status(400).json({error: 'Client not found'})
             return
         }
+
+        //check if client exchange the state in url query
+        let state = req.query.state
 
         //validate response_type
         let supported = constants.response_types_supported
         if (!supported.includes(req.query.response_type)) {
-            res.json({error: "unsupported_response_type"})
+            let cbUrl = `${_client.callback}?error=unsupported_response_type`
+            if (state) cbUrl += `&state=${state}`
+            res.redirect(302, cbUrl)
             return
         }
 
@@ -62,7 +67,6 @@ app.get('/realms/:realm/protocol/openid-connect/auth', ((req, res) => {
             let now = new Date().getTime()
             let duration = now - genTime
             redirect = immediateData.realm === realm
-                // && immediateData.client_id === client_id
                 && duration <= constants.authorization_code_expiration
         }
 
@@ -72,9 +76,12 @@ app.get('/realms/:realm/protocol/openid-connect/auth', ((req, res) => {
             let code = utils.genUUID()
             authCodeManager.set(code, immediateData, constants.authorization_code_expiration)
             let callbackUrl = `${_client.callback}?session_state=${req.sessionID}&code=${code}`
+            if (state) callbackUrl += `&state=${state}`
             res.redirect(302, callbackUrl)
         } else {
             //otherwise redirect user to login page
+            //store client state for next request with key = client_id + sessionID
+            if (state) authCodeManager.set(client_id + req.sessionID, state)
             res.cookie('realm', realm)
             res.cookie('client_id', req.query.client_id)
             res.sendFile(path.join(__dirname, './web/login.html'))
@@ -101,7 +108,9 @@ app.post('/realms/:realm/login-actions/authenticate', ((req, res) => {
         })
         let code = utils.genUUID()
         authCodeManager.set(code, immediateData, constants.authorization_code_expiration)
+        let state = authCodeManager.get(client_id + req.sessionID)
         let callbackUrl = `${_client.callback}?session_state=${session_state}&code=${code}`
+        if (state) callbackUrl += `&state=${state}`
         res.json({url: callbackUrl})
     } else {
         res.json({error: 'Invalid user credentials'})
