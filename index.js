@@ -108,6 +108,7 @@ app.post('/realms/:realm/login-actions/authenticate', ((req, res) => {
         })
         let code = utils.genUUID()
         authCodeManager.set(code, immediateData, constants.authorization_code_expiration)
+        // we should send back to client with the state this client exchanged before
         let state = authCodeManager.get(client_id + req.sessionID)
         let callbackUrl = `${_client.callback}?session_state=${session_state}&code=${code}`
         if (state) callbackUrl += `&state=${state}`
