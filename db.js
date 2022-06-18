@@ -19,15 +19,15 @@ const loadPromise = () => {
 }
 
 const insert = (doc) => {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         db.insert(doc, (err, newDoc) => {
-            if (err) logger.l(err)
+            if (err) reject(err)
             else resolve(newDoc._id)
         })
     })
 }
 
-const findById = async (id) => {
+const findById = (id) => {
     return new Promise(((resolve, reject) => {
         db.findOne({_id: id}, (err, doc) => {
             if (err) logger.l(err)
@@ -36,6 +36,24 @@ const findById = async (id) => {
     }))
 }
 
+const removeOne = (id) => {
+    return new Promise(((resolve, reject) => {
+        db.remove({_id: id}, (err, numRemoved) => {
+            if (err) reject(err)
+            else resolve(numRemoved)
+        })
+    }))
+}
+
+const removeAll = (model) => {
+    return new Promise(((resolve, reject) => {
+        db.remove({model: model}, (err, numRemoved) => {
+            if (err) reject(err)
+            else resolve(numRemoved)
+        })
+    }))
+}
+
 const checkInit = () => _checkInit
 
-module.exports = {init, checkInit, insert, findById}
+module.exports = {init, checkInit, insert, findById, removeAll, removeOne}

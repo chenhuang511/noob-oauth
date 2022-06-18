@@ -1,9 +1,8 @@
 const abstractDb = require('./db.js')
-const logger = require('./logger.js')
 
-const db = abstractDb.init().catch(e => logger.l(e))
-
-db.ensureIndex({fieldName: 'value', unique: true})
+const initConn = async () => {
+    return await abstractDb.init()
+}
 
 const insert = (doc) => {
     doc.model = 'auth_code'
@@ -14,11 +13,13 @@ const findById = (id) => {
     return abstractDb.findById(id)
 }
 
-const findByCode = (code) => {
-    return new Promise(resolve => {
+const findByCode = async (code) => {
+    return new Promise((resolve, reject) => {
         db.find({model: 'auth_code', value: code}, (err, docs) => {
-            if (err) logger.l(err)
+            if (err) reject(err)
             else resolve(docs.pop())
         })
     })
 }
+
+module.exports = {insert, findById, findByCode}

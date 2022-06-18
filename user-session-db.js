@@ -1,9 +1,8 @@
 const abstractDb = require('./db.js')
-const logger = require('./logger.js')
 
-const db = abstractDb.init().catch(e => logger.l(e))
-
-db.ensureIndex({fieldName: 'server_session_id', unique: true})
+const initConn = async () => {
+    return await abstractDb.init()
+}
 
 const insert = (doc) => {
     doc.model = 'user_session'
@@ -14,11 +13,29 @@ const findById = (id) => {
     return abstractDb.findById(id)
 }
 
-const findByServerSessionId = (server_session_id) => {
-    return new Promise(resolve => {
-        db.find({model: 'user_session', server_session_id: server_session_id}, (err, docs) => {
-            if (err) logger.l(err)
+const findDynamically = async (conditions) => {
+    let db = await initConn()
+    conditions.model = 'user_session'
+    return new Promise((resolve, reject) => {
+        db.find(conditions, (err, docs) => {
+            if (err) reject(err)
             else resolve(docs.pop())
         })
     })
 }
+
+const update = async (id, newDoc) => {
+    let db = await initConn()
+    return new Promise(((resolve, reject) => {
+        db.update({_id: id}, newDoc, (err, numReplaced) => {
+            if (err) reject(err)
+            else resolve(numReplaced)
+        })
+    }))
+}
+
+const removeOne = async (id) => {
+    return abstractDb.removeOne(id)
+}
+
+module.exports = {insert, update, findById, findDynamically, removeOne}

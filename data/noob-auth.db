@@ -1,2 +1,6 @@
-{"name":"noob-realm","active":1,"model":"realm","_id":"2vHo30WaeGuVq8PW"}
-{"$$indexCreated":{"fieldName":"name","unique":true,"sparse":false}}
+{"name":"noob-realm","active":1,"model":"realm","_id":"FIFlPe6z8W1VGuHr"}
+{"client_id":"noob-client","client_secret":"obYOV1G80OWRaMAgYHCPb5dSb9MnL4gQ","realm":"noob-realm","callback_url":"http://localhost:3005/callback","roles":["user","admin"],"model":"client","_id":"HIlKioxfYn2Zj5FV"}
+{"realm":"noob-realm","username":"noob-user","password":"e10adc3949ba59abbe56e057f20f883e","granted_roles":[{"noob_client":"user"}],"model":"user","_id":"vp9jBRSjau7eRjYG"}
+{"$$deleted":true,"_id":"FIFlPe6z8W1VGuHr"}
+{"$$deleted":true,"_id":"HIlKioxfYn2Zj5FV"}
+{"$$deleted":true,"_id":"vp9jBRSjau7eRjYG"}

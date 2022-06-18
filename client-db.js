@@ -1,9 +1,8 @@
 const abstractDb = require('./db.js')
-const logger = require('./logger.js')
 
-const db = abstractDb.init().catch(e => logger.l(e))
-
-db.ensureIndex({fieldName: 'client_id', unique: true})
+const initConn = async () => {
+    return await abstractDb.init()
+}
 
 const insert = (doc) => {
     doc.model = 'client'
@@ -14,23 +13,29 @@ const findById = (id) => {
     return abstractDb.findById(id)
 }
 
-const findByClientId = (client_id) => {
-    return new Promise(resolve => {
+const findByClientId = async (client_id) => {
+    let db = await initConn()
+    return new Promise((resolve, reject) => {
         db.find({model: 'client', client_id: client_id}, (err, docs) => {
-            if (err) logger.l(err)
+            if (err) reject(err)
             else resolve(docs.pop())
         })
     })
 }
 
 //for authentication
-const findByClientCredentials = (realm, client_id, client_secret) => {
-    return new Promise(resolve => {
+const findByClientCredentials = async (realm, client_id, client_secret) => {
+    let db = await initConn()
+    return new Promise((resolve, reject) => {
         db.find({model: 'client', realm: realm, client_id: client_id, client_secret: client_secret}, (err, docs) => {
-            if (err) logger.l(err)
+            if (err) reject(err)
             else resolve(docs.pop())
         })
     })
 }
 
-module.exports = {insert, findById, findByClientId, findByClientCredentials}
+const removeAll = () => {
+    return abstractDb.removeAll('client')
+}
+
+module.exports = {insert, findById, findByClientId, findByClientCredentials, removeAll}

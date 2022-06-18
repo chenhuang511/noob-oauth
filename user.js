@@ -42,4 +42,8 @@ const hashPassword = (raw_pass) => {
     return crypto.createHash('md5').update(raw_pass).digest('hex')
 }
 
-module.exports = {create, authenticate, grantRoles}
+const removeAll = async () => {
+    return await userDb.removeAll()
+}
+
+module.exports = {create, authenticate, grantRoles, removeAll}

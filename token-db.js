@@ -1,9 +1,8 @@
 const abstractDb = require('./db.js')
-const logger = require('./logger.js')
 
-const db = abstractDb.init().catch(e => logger.l(e))
-
-db.ensureIndex({fieldName: 'hash', unique: true})
+const initConn = async () => {
+    return await abstractDb.init()
+}
 
 const insert = (doc) => {
     doc.model = 'token'
@@ -14,20 +13,24 @@ const findById = (id) => {
     return abstractDb.findById(id)
 }
 
-const findTokenByTypeAndHash = (type, hashValue) => {
+const findByUUID = async (uuid) => {
+    let db = await initConn()
     return new Promise(resolve => {
-        db.find({model: 'token', type: type, hash: hashValue}, (err, docs) => {
-            if (err) logger.l(err)
+        db.find({model: 'token', uuid: uuid}, (err, docs) => {
+            if (err) reject(err)
             else resolve(docs.pop())
         })
     })
 }
 
-const findTokenByTypeAndValue = (type, value) => {
-    return new Promise(resolve => {
-        db.find({model: 'token', type: type, value: value}, (err, docs) => {
-            if (err) logger.l(err)
-            else resolve(docs.pop())
+const update = async (id, newDoc) => {
+    let db = await initConn()
+    return new Promise(((resolve, reject) => {
+        db.update({_id: id}, newDoc, (err, numReplaced) => {
+            if (err) reject(err)
+            else resolve(numReplaced)
         })
-    })
+    }))
 }
+
+module.exports = {insert, findById, update, findByUUID}

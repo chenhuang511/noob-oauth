@@ -15,4 +15,8 @@ const check = async (name) => {
     return !!doc._id;
 }
 
-module.exports = {create, check}
+const removeAll = async () => {
+    return await realmDb.removeAll()
+}
+
+module.exports = {create, check, removeAll}
