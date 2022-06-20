@@ -119,7 +119,7 @@ const run = async () => {
     let authorize1 = await testAuthorize()
     await testAuthorizeWithCookie(authorize1.data.server_session)
     await testToken()
-    // await clear()
+    await clear()
 }
 
 run().catch()
