@@ -3,10 +3,7 @@ const constants = require('./constants.js')
 
 const lifeSpanInSeconds = constants.authorization_code_expiration / 1000
 
-const create = async (http_session_id, user_session_id, client_session_id) => {
-    if (!http_session_id || !user_session_id || !client_session_id)
-        throw new Error('Create auth code error, invalid params')
-    let code = `${http_session_id}.${user_session_id}.${client_session_id}`
+const create = async (code) => {
     let create_time = Math.floor(new Date().getTime() / 1000)
     let expire_time = create_time + lifeSpanInSeconds
     return authCodeDb.insert({code, create_time, expire_time})

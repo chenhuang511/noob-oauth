@@ -35,7 +35,7 @@ const grantRoles = async (realm, username, client_id, role) => {
 const authenticate = async (realm, username, password) => {
     password = hashPassword(password)
     let user = await userDb.findByUserCredentials(realm, username, password)
-    return !!user._id
+    return user || false
 }
 
 const hashPassword = (raw_pass) => {

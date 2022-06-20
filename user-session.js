@@ -8,16 +8,8 @@ const terminate = async (id) => {
     return await userSessionDb.removeOne(id)
 }
 
-const findByServerSession = async (serverSession) => {
-    if (!serverSession) throw new Error('Invalid cookie')
-    let parsed = serverSession.split('/')
-    if (!parsed || parsed.length !== 3) throw new Error('Invalid cookie')
-    let realm = parsed[0]
-    let user_id = parsed[1]
-    let http_session_id = parsed[2]
-    let userSession = userSessionDb.findDynamically({realm, user_id, http_session_id})
-    if (!userSession || !userSession._id) throw new Error(`Not found user session`)
-    return userSession
+const findById = async (id) => {
+    return userSessionDb.findById(id)
 }
 
-module.exports = {create, terminate, findByServerSession}
+module.exports = {create, terminate, findById}

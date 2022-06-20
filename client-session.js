@@ -1,11 +1,11 @@
 const clientSessionDb = require('./client-session-db.js')
 
-const defaultScopes = 'email profile'
+const defaultScope = 'email profile'
 
-const create = async (realm, client_id, scopes, request_state) => {
-    if (!scopes) scopes = defaultScopes
+const create = async (realm, client_id, scope, request_state, http_session_id) => {
+    if (!scope) scope = defaultScope
     try {
-        return await clientSessionDb.insert({realm, client_id, scopes, request_state})
+        return await clientSessionDb.insert({realm, client_id, scope, request_state, http_session_id})
     } catch (e) {
         throw e
     }

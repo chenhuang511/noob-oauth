@@ -21,14 +21,14 @@ const create = async (realm, name, callback_url) => {
     }
 }
 
-const exists = async (client_id) => {
-    let client = await clientDb.findByClientId(client_id)
-    return !!client._id
+const exists = async (realm, client_id) => {
+    let client = await clientDb.findByClientId(realm, client_id)
+    return client || false
 }
 
 const authenticate = async (realm, client_id, client_secret) => {
     let client = await clientDb.findByClientCredentials(realm, client_id, client_secret)
-    return !!client._id
+    return client || false
 }
 
 const removeAll = async () => {

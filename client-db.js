@@ -13,10 +13,10 @@ const findById = (id) => {
     return abstractDb.findById(id)
 }
 
-const findByClientId = async (client_id) => {
+const findByClientId = async (realm, client_id) => {
     let db = await initConn()
     return new Promise((resolve, reject) => {
-        db.find({model: 'client', client_id: client_id}, (err, docs) => {
+        db.find({model: 'client', realm, client_id}, (err, docs) => {
             if (err) reject(err)
             else resolve(docs.pop())
         })

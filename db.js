@@ -56,4 +56,13 @@ const removeAll = (model) => {
 
 const checkInit = () => _checkInit
 
-module.exports = {init, checkInit, insert, findById, removeAll, removeOne}
+const findAll = (model) => {
+    return new Promise(((resolve, reject) => {
+        db.find({model: model}, (err, docs) => {
+            if (err) reject(err)
+            else resolve(docs)
+        })
+    }))
+}
+
+module.exports = {init, checkInit, insert, findById, removeAll, removeOne, findAll}
