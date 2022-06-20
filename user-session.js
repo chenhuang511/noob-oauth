@@ -12,4 +12,8 @@ const findById = async (id) => {
     return userSessionDb.findById(id)
 }
 
-module.exports = {create, terminate, findById}
+const findByUserIdAndHttpSessionId = async (realm, user_id, http_session_id) => {
+    return userSessionDb.findDynamically({realm, user_id, http_session_id})
+}
+
+module.exports = {create, terminate, findById, findByUserIdAndHttpSessionId}

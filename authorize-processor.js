@@ -10,7 +10,8 @@ let STATUS = {
     err: 99,
     client_err: 1,
     response_type_err: 2,
-    user_authentication_err: 3
+    user_authentication_err: 3,
+    server_session_err: 4,
 }
 
 const beforeAuthenticationProcess = async (realm, client_id, response_type, scopes, state, http_session, server_session = '') => {
@@ -30,7 +31,7 @@ const beforeAuthenticationProcess = async (realm, client_id, response_type, scop
         }
 
         if (server_session)
-            return await processWithSession(server_session, scopes, state, result)
+            return await processWithSession(realm, client_id, server_session, scopes, state, http_session)
         else {
             result.status = STATUS.ok
             result.data = {redirect_login: true}
@@ -38,13 +39,58 @@ const beforeAuthenticationProcess = async (realm, client_id, response_type, scop
         return result
     } catch (e) {
         result.status = STATUS.err
-        result.message = e
+        result.message = e.message
         return result
     }
 }
 
-const processWithSession = async (serverSession, scopes, state, result) => {
+const processWithSession = async (realm, client_id, serverSession, scope, state) => {
+    let result = {status: STATUS.err, message: '', data: {}}
+    try {
+        //validate server_session
+        let parsed = serverSession.split('/')
+        let check1 = !parsed || parsed.length !== 3
+        if (!parsed || parsed.length !== 3) {
+            result.status = STATUS.server_session_err
+            result.message = 'invalid server session'
+            result.data = {redirect_login: true}
+            return result
+        }
+        let cookieRealm = parsed[0]
+        let authenticatedUserId = parsed[1]
+        let authenticatedHttpSessionId = parsed[2]
 
+        let authenticatedUserSession = await userSession.findByUserIdAndHttpSessionId(cookieRealm, authenticatedUserId, authenticatedHttpSessionId)
+        if (cookieRealm !== realm || !authenticatedUserSession || !authenticatedUserSession._id) {
+            result.status = STATUS.server_session_err
+            result.message = 'invalid server session'
+            result.data = {redirect_login: true}
+            return result
+        }
+
+        let newClientSessionId = await clientSession.create(realm, client_id, scope, state, authenticatedHttpSessionId)
+
+        //create authorization code & store into db
+        let code = `${authenticatedHttpSessionId}.${authenticatedUserSession._id}.${newClientSessionId}`
+        await authCode.create(code)
+
+        //get client callback url
+        let existClient = await client.exists(realm, client_id)
+        let callback_url = existClient.callback_url
+
+        result.status = STATUS.ok
+        result.data = {
+            redirect_client: true,
+            callback_url,
+            code,
+            server_session: serverSession
+        }
+        return result
+    } catch (e) {
+        result.status = STATUS.err
+        result.message = e.message
+        return result
+    }
 }
 
 const handleAuthenticationProcess = async (realm, client_id, username, password, scope, state, http_session_id) => {
@@ -86,7 +132,7 @@ const handleAuthenticationProcess = async (realm, client_id, username, password,
         return result
     } catch (e) {
         result.status = STATUS.user_authentication_err
-        result.message = e
+        result.message = e.message
         return result
     }
 }

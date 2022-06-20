@@ -10,6 +10,7 @@ const client_id = 'noob-client'
 const client_callback_url = 'http://localhost:3005/callback'
 const username = 'noob-user'
 const password = '123456'
+let http_session = crypto.randomUUID()
 
 const testCreateRealm = async () => {
     console.log(`=====BEGIN TEST REAM=====\n`)
@@ -48,7 +49,7 @@ const testCreateUser = async () => {
 const testAuthorize = async () => {
     console.log(`=====BEGIN TEST AUTHORIZE=====\n`)
 
-    let http_session = crypto.randomUUID()
+    // let http_session = crypto.randomUUID()
     let scope = 'email profile'
     let state = crypto.randomBytes(10).toString('hex')
     let response_type = 'code'
@@ -61,6 +62,20 @@ const testAuthorize = async () => {
 
     console.log(`=====DONE TEST AUTHORIZE=====\n`)
     return authorizeCheck
+}
+
+const testAuthorizeWithCookie = async (cookie) => {
+    console.log(`=====BEGIN TEST AUTHORIZE WITH COOKIE=====\n`)
+    let scope = 'email'
+    let state = crypto.randomBytes(10).toString('hex')
+    let response_type = 'code'
+    let initCheck = await authorizeProcessor
+        .beforeAuthenticationProcess(realmName, client_id, response_type, scope, state, http_session, cookie)
+    console.log(`init check with code in response:`)
+    console.log(initCheck)
+
+    console.log(`=====DONE TEST AUTHORIZE WITH COOKIE=====\n`)
+    return initCheck
 }
 
 const testToken = async () => {
@@ -101,9 +116,10 @@ const run = async () => {
     await testCreateRealm()
     await testCreateClient()
     await testCreateUser()
-    // await testAuthorize()
+    let authorize1 = await testAuthorize()
+    await testAuthorizeWithCookie(authorize1.data.server_session)
     await testToken()
-    await clear()
+    // await clear()
 }
 
 run().catch()
