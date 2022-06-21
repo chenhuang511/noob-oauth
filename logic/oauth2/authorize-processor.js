@@ -1,9 +1,9 @@
-const constants = require('./constants.js')
-const client = require('./client.js')
-const user = require('./user.js')
-const clientSession = require('./client-session.js')
-const userSession = require('./user-session.js')
-const authCode = require('./auth-code.js')
+const constants = require('../../constants.js')
+const client = require('../../service/client.js')
+const user = require('../../service/user.js')
+const clientSession = require('../../service/client-session.js')
+const userSession = require('../../service/user-session.js')
+const authCode = require('../../service/auth-code.js')
 
 let STATUS = {
     ok: 0,

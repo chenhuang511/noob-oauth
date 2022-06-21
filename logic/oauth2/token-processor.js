@@ -1,7 +1,7 @@
-const constants = require('./constants.js')
-const client = require('./client.js')
-const token = require('./token.js')
-const authCode = require('./auth-code.js')
+const constants = require('../../constants.js')
+const client = require('../../service/client.js')
+const token = require('../../service/token.js')
+const authCode = require('../../service/auth-code.js')
 
 const STATUS = {
     ok: 0,

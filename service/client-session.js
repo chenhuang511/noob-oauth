@@ -1,4 +1,4 @@
-const clientSessionDb = require('./client-session-db.js')
+const clientSessionDb = require('../repository/client-session-db.js')
 
 const defaultScope = 'email profile'
 

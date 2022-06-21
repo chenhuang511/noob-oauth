@@ -1,9 +1,9 @@
-const realm = require('./realm.js')
-const client = require('./client.js')
-const user = require('./user.js')
+const realm = require('../service/realm.js')
+const client = require('../service/client.js')
+const user = require('../service/user.js')
 const crypto = require('crypto')
-const authorizeProcessor = require('./authorize-processor.js')
-const tokenProcessor = require('./token-processor.js')
+const authorizeProcessor = require('../logic/oauth2/authorize-processor.js')
+const tokenProcessor = require('../logic/oauth2/token-processor.js')
 
 const realmName = 'noob-realm'
 const client_id = 'noob-client'

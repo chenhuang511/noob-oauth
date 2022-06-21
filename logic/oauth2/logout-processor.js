@@ -1,4 +1,4 @@
-const userSession = require('./user-session.js')
+const userSession = require('../../service/user-session.js')
 
 const confirmLogout = async (realm, serverSession) => {
     if (serverSession) {

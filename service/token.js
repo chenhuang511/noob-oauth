@@ -1,10 +1,10 @@
-const tokenDb = require('./token-db.js')
-const constants = require('./constants.js')
+const tokenDb = require('../repository/token-db.js')
+const constants = require('../constants.js')
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
-const userSessionDb = require('./user-session-db.js')
-const clientSessionDb = require('./client-session-db.js')
-const userDb = require('./user-db.js')
+const userSessionDb = require('../repository/user-session-db.js')
+const clientSessionDb = require('../repository/client-session-db.js')
+const userDb = require('../repository/user-db.js')
 
 let tokenTypes = ['access_token', 'refresh_token']
 

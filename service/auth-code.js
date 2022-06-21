@@ -1,5 +1,5 @@
-const authCodeDb = require('./auth-code-db.js')
-const constants = require('./constants.js')
+const authCodeDb = require('../repository/auth-code-db.js')
+const constants = require('../constants.js')
 
 const lifeSpanInSeconds = constants.authorization_code_expiration / 1000
 

@@ -1,5 +1,5 @@
-const userDb = require('./user-db.js')
-const realmDb = require('./realm-db.js')
+const userDb = require('../repository/user-db.js')
+const realmDb = require('../repository/realm-db.js')
 const crypto = require('crypto')
 
 const create = async (realm, username, password, granted_roles = []) => {

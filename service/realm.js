@@ -1,4 +1,4 @@
-const realmDb = require('./realm-db.js')
+const realmDb = require('../repository/realm-db.js')
 
 const create = async (name) => {
     let doc = {name: name, active: 1}

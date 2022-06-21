@@ -1,41 +1,14 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const path = require('path')
-const constants = require('./constants.js')
-const cookieParser = require("cookie-parser")
-const sessions = require('express-session')
-const logger = require('./logger.js')
-const crypto = require('crypto')
+const constants = require('../constants.js')
+const logger = require('../logger.js')
+const authorizeProcessor = require('../logic/oauth2/authorize-processor.js')
 
-const authorizeProcessor = require('./authorize-processor.js')
-const tokenProcessor = require('./token-processor.js')
-const logoutProcessor = require('./logout-processor.js')
+let router = express.Router()
 
-const app = express()
-const PORT = 4000
-
-//view engine setup
-app.engine('html', require('ejs').renderFile)
-app.set('view engine', 'html')
-app.set('views', path.join(__dirname, './web/'))
-
-app.use(sessions({
-    secret: crypto.randomBytes(16).toString('base64'),
-    saveUninitialized: true,
-    resave: false
-}))
-
-app.use(cookieParser())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(express.static('./web'))
-
-app.get('/', (req, res) => {
-    res.json({message: 'Hello world'})
-})
+const API_PREFIX = '/oauth2'
 
 //authorize endpoint
-app.get('/realms/:realm/protocol/openid-connect/auth', async (req, res) => {
+router.get('/:realm/authorize', async (req, res) => {
     let realm = req.params['realm']
     let client_id = req.query.client_id
     let scope = req.query.scope
@@ -63,7 +36,7 @@ app.get('/realms/:realm/protocol/openid-connect/auth', async (req, res) => {
 })
 
 //resource owner authorization grant endpoint: user authentication endpoint
-app.post('/realms/:realm/login-actions/authenticate', async (req, res) => {
+router.post('/:realm/authenticate', async (req, res) => {
     //check session first
     let requestSession = req.cookies[constants.request_session_key]
     let httpSessionId = req.sessionID
@@ -95,7 +68,7 @@ app.post('/realms/:realm/login-actions/authenticate', async (req, res) => {
 
 const redirectToLogin = async (reqSessionId, response, realm, state, client_id, scope, message) => {
     let passData = {}
-    passData.authAction = `/realms/${realm}/login-actions/authenticate?state=${state}&client_id=${client_id}&scope=${scope}`
+    passData.authAction = `${API_PREFIX}/${realm}/authenticate?state=${state}&client_id=${client_id}&scope=${scope}`
     passData.errorMessage = message || ''
     response.cookie(constants.request_session_key, reqSessionId)
     response.render('login.html', passData)
@@ -113,7 +86,4 @@ const callbackClient = async (response, authorizeResult) => {
     response.redirect(302, url)
 }
 
-// start app
-app.listen(PORT, () => {
-    logger.l('noob oauth started')
-})
+module.exports = router

@@ -1,6 +1,6 @@
-const clientDb = require('./client-db.js')
-const realmDb = require('./realm-db.js')
-const log = require('./logger.js')
+const clientDb = require('../repository/client-db.js')
+const realmDb = require('../repository/realm-db.js')
+const log = require('../logger.js')
 const crypto = require('crypto')
 
 const create = async (realm, name, callback_url) => {
