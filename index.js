@@ -9,6 +9,7 @@ const crypto = require('crypto')
 //api controller
 const oauth2AuthorizeController = require('./web-api/oauth2-authorize-api.js')
 const oauth2TokenController = require('./web-api/oauth2-token-api.js')
+const oauth2LogoutController = require('./web-api/oauth2-logout-api.js')
 
 const app = express()
 const PORT = 4000
@@ -36,6 +37,7 @@ app.get('/', (req, res) => {
 // oauth2 api
 app.use('/oauth2', oauth2AuthorizeController)
 app.use('/oauth2', oauth2TokenController)
+app.use('/oauth2', oauth2LogoutController)
 
 // start app
 app.listen(PORT, () => {
