@@ -4,11 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.17/sweetalert2.all.min.js"></script>
     <title>Login</title>
     <style>
         .form-signin {
@@ -96,55 +92,21 @@
                 <img class="profile-img"
                      src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120"
                      alt="">
-                <form class="form-signin">
-                    <input type="text" id='username' class="form-control" placeholder="Email" required autofocus>
-                    <input type="password" id='password' class="form-control" placeholder="Password" required>
-                    <button id="login" class="btn btn-lg btn-primary btn-block" type="button">
+                <form class="form-signin" method="post" action='<%= authAction %>'>
+                    <input type="text" id='username' name="username" class="form-control" placeholder="Email" required
+                           autofocus>
+                    <input type="password" id='password' name="password" class="form-control" placeholder="Password"
+                           required>
+                    <button id="login" class="btn btn-lg btn-primary btn-block" type="submit">
                         Sign in
                     </button>
+                    <% if (errorMessage) { %>
+                    <p style="color: red"><%= errorMessage %></p>
+                    <% } %>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function getCookie(cname) {
-        let name = cname + "=";
-        let ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-    $('#login').click(() => {
-        let realm = getCookie('realm')
-        let client_id = getCookie('client_id')
-        let username = $('#username').val()
-        let password = $('#password').val()
-        let url = `/realms/${realm}/login-actions/authenticate?client_id=${client_id}`
-        $.post(url, {username, password})
-            .done((data) => {
-                if (data) {
-                    if (data.error)
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: data.error,
-                        })
-                    else
-                        window.location = data.url
-                }
-            })
-    })
-</script>
-
 </body>
 </html>

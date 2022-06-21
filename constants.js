@@ -1,5 +1,7 @@
 module.exports = {
     base_url: 'http://localhost:4000',
+    server_session_key: 'noob-session',
+    request_session_key: 'request-session',
     response_types_supported: ['code'],
     grant_types_supported: ['authorization_code', 'refresh_token'],
     authorization_code_expiration: 300000, //

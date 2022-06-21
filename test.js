@@ -116,10 +116,10 @@ const run = async () => {
     await testCreateRealm()
     await testCreateClient()
     await testCreateUser()
-    let authorize1 = await testAuthorize()
-    await testAuthorizeWithCookie(authorize1.data.server_session)
-    await testToken()
-    await clear()
+    // let authorize1 = await testAuthorize()
+    // await testAuthorizeWithCookie(authorize1.data.server_session)
+    // await testToken()
+    // await clear()
 }
 
 run().catch()

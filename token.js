@@ -10,12 +10,12 @@ let tokenTypes = ['access_token', 'refresh_token']
 
 const generateTokens = async (userSessionId, clientSessionId) => {
     let userSession = await userSessionDb.findById(userSessionId)
-    if (!userSession) throw new Error('UserSession not found')
+    if (!userSession) throw new Error('Session not active')
     let clientSession = await clientSessionDb.findById(clientSessionId)
-    if (!clientSession) throw new Error('ClientSession not found')
+    if (!clientSession) throw new Error('Session not active')
     let userId = userSession.user_id
     let authenticatedUser = await userDb.findById(userId)
-    if (!clientSession) throw new Error('Not found authenticated user')
+    if (!clientSession) throw new Error('User not found')
 
     let jti = crypto.randomUUID()
     let resource_access = authenticatedUser.granted_roles
