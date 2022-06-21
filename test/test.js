@@ -112,8 +112,8 @@ const clear = async () => {
 }
 
 const run = async () => {
-    await clear()
-    await testCreateRealm()
+    // await clear()
+    // await testCreateRealm()
     await testCreateClient()
     await testCreateUser()
     // let authorize1 = await testAuthorize()

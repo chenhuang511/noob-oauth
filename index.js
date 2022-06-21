@@ -7,7 +7,8 @@ const logger = require('./logger.js')
 const crypto = require('crypto')
 
 //api controller
-const oauth2Controller = require('./web-api/oauth2-api.js')
+const oauth2AuthorizeController = require('./web-api/oauth2-authorize-api.js')
+const oauth2TokenController = require('./web-api/oauth2-token-api.js')
 
 const app = express()
 const PORT = 4000
@@ -33,7 +34,8 @@ app.get('/', (req, res) => {
 })
 
 // oauth2 api
-app.use('/oauth2', oauth2Controller)
+app.use('/oauth2', oauth2AuthorizeController)
+app.use('/oauth2', oauth2TokenController)
 
 // start app
 app.listen(PORT, () => {

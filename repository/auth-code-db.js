@@ -23,4 +23,14 @@ const findByCode = async (code) => {
     })
 }
 
-module.exports = {insert, findById, findByCode}
+const removeByCode = async (code) => {
+    let db = await initConn()
+    return new Promise((resolve, reject) => {
+        db.remove({model: 'auth_code', code: code}, (err, removedNum) => {
+            if (err) reject(err)
+            else resolve(removedNum)
+        })
+    })
+}
+
+module.exports = {insert, findById, findByCode, removeByCode}

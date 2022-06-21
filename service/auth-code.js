@@ -3,22 +3,29 @@ const constants = require('../constants.js')
 
 const lifeSpanInSeconds = constants.authorization_code_expiration / 1000
 
-const create = async (code) => {
+const create = async (code, client_id) => {
     let create_time = Math.floor(new Date().getTime() / 1000)
     let expire_time = create_time + lifeSpanInSeconds
-    return authCodeDb.insert({code, create_time, expire_time})
+    return authCodeDb.insert({code, client_id, create_time, expire_time})
 }
 
-const checkValidCode = async (code) => {
-    if (!code) throw new Error('Invalid code')
+const checkValidCode = async (code, client_id) => {
+    if (!code) return false
     let tmp = code.split('.')
-    if (!tmp || tmp.length !== 3) throw new Error('Invalid code')
+    if (!tmp || tmp.length !== 3)
+        return false
     let authCode = await authCodeDb.findByCode(code)
-    if (!authCode || !authCode._id) throw new Error('Code not found')
+    if (!authCode || !authCode._id)
+        return false
+    if (client_id !== authCode.client_id)
+        return false
     let expire_time = authCode.expire_time
     let now = Math.floor(new Date().getTime() / 1000)
-    if (expire_time < now) throw new Error('Code is expired')
-    return true
+    return expire_time >= now;
 }
 
-module.exports = {create, checkValidCode}
+const inactiveCode = async (code) => {
+    return authCodeDb.removeByCode(code)
+}
+
+module.exports = {create, checkValidCode, inactiveCode}

@@ -13,7 +13,7 @@ const STATUS = {
     client_session_err: 5
 }
 
-const process = async (realm, grant_type, client_id, client_secret, data) => {
+const process = async (realm, grant_type, client_id, client_secret, code, refresh_token) => {
     let result = {status: STATUS.err, message: '', data: {}}
     try {
         //check grant_type
@@ -32,24 +32,24 @@ const process = async (realm, grant_type, client_id, client_secret, data) => {
         }
 
         if (grant_type === 'authorization_code')
-            return await processWithAuthCode(data)
+            return await processWithAuthCode(code, client_id)
         else
-            return await processWithRefreshToken(data)
+            return await processWithRefreshToken(refresh_token)
     } catch (e) {
         result.status = STATUS.err
-        result.message = e
+        result.message = e.message
         return result
     }
 }
 
-const processWithAuthCode = async (code) => {
+const processWithAuthCode = async (code, client_id) => {
     let result = {status: STATUS.err, message: '', data: {}}
     try {
         //check auth code
-        let checkCode = await authCode.checkValidCode(code)
+        let checkCode = await authCode.checkValidCode(code, client_id)
         if (!checkCode) {
             result.status = STATUS.auth_code_err
-            result.message = 'code is not valid'
+            result.message = 'invalid code'
             return result
         }
 
@@ -58,12 +58,15 @@ const processWithAuthCode = async (code) => {
         let clientSessionId = parsed[2]
 
         let tokens = await token.generateTokens(userSessionId, clientSessionId)
+        //inactive used auth code
+        await authCode.inactiveCode(code)
+
         result.status = STATUS.ok
         result.data = tokens
         return result
     } catch (e) {
         result.status = STATUS.err
-        result.message = e
+        result.message = e.message
         return result
     }
 }
@@ -77,7 +80,7 @@ const processWithRefreshToken = async (refresh_token) => {
         return result
     } catch (e) {
         result.status = STATUS.err
-        result.message = e
+        result.message = e.message
         return result
     }
 }

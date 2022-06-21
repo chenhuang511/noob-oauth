@@ -19,7 +19,7 @@ const generateTokens = async (userSessionId, clientSessionId) => {
 
     let jti = crypto.randomUUID()
     let resource_access = authenticatedUser.granted_roles
-    let scope = clientSession.scopes
+    let scope = clientSession.scope
     let preferred_username = authenticatedUser.username
     let session_state = userSession.http_session_id
     let sid = userSession.http_session_id

@@ -11,9 +11,9 @@ const API_PREFIX = '/oauth2'
 router.get('/:realm/authorize', async (req, res) => {
     let realm = req.params['realm']
     let client_id = req.query.client_id
-    let scope = req.query.scope
+    let scope = req.query.scope || ''
     let response_type = req.query.response_type
-    let state = req.query.state
+    let state = req.query.state || ''
     let httpSessionId = req.sessionID
     let serverSessionId = req.cookies[constants.server_session_key]
 
@@ -42,8 +42,8 @@ router.post('/:realm/authenticate', async (req, res) => {
     let httpSessionId = req.sessionID
     let realm = req.params['realm']
     let client_id = req.query.client_id
-    let scope = req.query.scope
-    let state = req.query.state
+    let scope = req.query.scope || ''
+    let state = req.query.state || ''
 
     let {username, password} = req.body
 
@@ -80,7 +80,8 @@ const callbackClient = async (response, authorizeResult) => {
     let serverSession = authorizeResult.data.server_session
     let state = authorizeResult.data.state
     let session_state = authorizeResult.data.session_state
-    let url = `${clientCallback}?state=${state}&session_state=${session_state}&code=${code}`
+    let url = `${clientCallback}?session_state=${session_state}&code=${code}`
+    if (state) url += `&state=${state}`
     response.cookie(constants.server_session_key, serverSession)
     response.cookie(constants.request_session_key, session_state)
     response.redirect(302, url)

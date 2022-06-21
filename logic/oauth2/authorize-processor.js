@@ -73,7 +73,7 @@ const processWithSession = async (realm, client_id, serverSession, scope, state,
 
         //create authorization code & store into db
         let code = `${authenticatedHttpSessionId}.${authenticatedUserSession._id}.${newClientSessionId}`
-        await authCode.create(code)
+        await authCode.create(code, client_id)
 
         //get client callback url
         let existClient = await client.exists(realm, client_id)
@@ -119,7 +119,7 @@ const handleAuthenticationProcess = async (realm, client_id, username, password,
 
         //create authorization code & store into db
         let code = `${http_session_id}.${userSessionId}.${clientSessionId}`
-        await authCode.create(code)
+        await authCode.create(code, client_id)
 
         //get client callback url
         let existClient = await client.exists(realm, client_id)

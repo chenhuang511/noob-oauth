@@ -3,7 +3,7 @@ const clientSessionDb = require('../repository/client-session-db.js')
 const defaultScope = 'email profile'
 
 const create = async (realm, client_id, scope, request_state, http_session_id) => {
-    if (!scope) scope = defaultScope
+    scope = scope || defaultScope
     try {
         return await clientSessionDb.insert({realm, client_id, scope, request_state, http_session_id})
     } catch (e) {
