@@ -34,7 +34,15 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static('./web-view/static'))
 
-app.use(helmet())
+// security configure
+// app.use(helmet.contentSecurityPolicy({
+//     useDefaults: true,
+//     directives: {
+//         'form-action': ["'self'"],
+//     },
+// }))
+app.use(helmet.noSniff())
+app.use(helmet.xssFilter())
 
 // default api
 app.get('/', (req, res) => {

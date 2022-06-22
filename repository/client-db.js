@@ -34,8 +34,18 @@ const findByClientCredentials = async (realm, client_id, client_secret) => {
     })
 }
 
+const removeByClientId = async (client_id) => {
+    let db = await initConn()
+    return new Promise(((resolve, reject) => {
+        db.remove({model: 'client', client_id}, (err, removedNum) => {
+            if (err) reject(err)
+            resolve(removedNum)
+        })
+    }))
+}
+
 const removeAll = () => {
     return abstractDb.removeAll('client')
 }
 
-module.exports = {insert, findById, findByClientId, findByClientCredentials, removeAll}
+module.exports = {insert, findById, findByClientId, findByClientCredentials, removeAll, removeByClientId}

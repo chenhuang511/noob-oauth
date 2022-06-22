@@ -1,5 +1,6 @@
 const clientDb = require('../repository/client-db.js')
 const realmDb = require('../repository/realm-db.js')
+const allowRedirectionDb = require('../repository/allow-redirection-db')
 const log = require('../logger.js')
 const crypto = require('crypto')
 
@@ -14,7 +15,13 @@ const create = async (realm, name, callback_url) => {
     let scopes = ['username', 'profile'] // default scopes
     let client_secret = crypto.randomBytes(24).toString("base64")
     try {
+        // create client
         let _id = await clientDb.insert({client_id: name, client_secret, realm, callback_url, roles, scopes})
+        // create redirection configuration
+        let url = new URL(callback_url)
+        let domain = `${url.protocol}//${url.hostname}:${url.port}`
+        await allowRedirectionDb.insert({client_id: name, domain})
+
         return {_id, client_id: name, client_secret}
     } catch (e) {
         throw e
@@ -31,8 +38,14 @@ const authenticate = async (realm, client_id, client_secret) => {
     return client || false
 }
 
+const removeByClientId = async (client_id) => {
+    await allowRedirectionDb.removeByClientId(client_id)
+    return await clientDb.removeByClientId(client_id)
+}
+
 const removeAll = async () => {
+    await allowRedirectionDb.removeAll()
     return await clientDb.removeAll()
 }
 
-module.exports = {create, exists, authenticate, removeAll}
+module.exports = {create, exists, authenticate, removeAll, removeByClientId}
