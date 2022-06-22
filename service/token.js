@@ -74,18 +74,28 @@ const generateTokens = async (userSessionId, clientSessionId) => {
     }
 }
 
-//gen tokens from the refresh_token
+//gen tokens from the refresh_token after validation
 const refreshTokens = async (refresh_token) => {
     //verify token
     const decoded = await verifyToken(refresh_token)
-    if (!decoded || !decoded.jti) throw new Error('invalid refresh_token')
     let dbToken = await tokenDb.findByUUID(decoded.jti)
-    if (!dbToken || dbToken.is_revoked === 1) throw new Error('token not found or revoked')
     let userSessionId = dbToken.user_session_id
     let clientSessionId = dbToken.client_session_id
     let newTokens = await generateTokens(userSessionId, clientSessionId)
     await revokeToken(dbToken._id)
     return newTokens
+}
+
+const validateRefreshToken = async (refresh_token) => {
+    try {
+        const decoded = await verifyToken(refresh_token)
+        if (!decoded || !decoded.jti)
+            return false
+        let dbToken = await tokenDb.findByUUID(decoded.jti)
+        return (dbToken && dbToken.is_revoked === 0)
+    } catch (e) {
+        return false
+    }
 }
 
 const verifyToken = async (token) => {
@@ -126,4 +136,4 @@ const revokeToken = async (id) => {
     return tokenDb.update(id, token)
 }
 
-module.exports = {generateTokens, refreshTokens, isRevoked, revokeToken, verifyToken}
+module.exports = {generateTokens, refreshTokens, isRevoked, revokeToken, verifyToken, validateRefreshToken}
