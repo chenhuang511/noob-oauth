@@ -68,7 +68,10 @@ router.post('/:realm/authenticate', async (req, res) => {
 
 const redirectToLogin = async (reqSessionId, response, realm, state, client_id, scope, message) => {
     let passData = {}
-    passData.authAction = `${API_PREFIX}/${realm}/authenticate?state=${state}&client_id=${client_id}&scope=${scope}`
+    let authAction = `${API_PREFIX}/${realm}/authenticate?client_id=${client_id}`
+    if (state) authAction += `&state=${state}`
+    if (scope) authAction += `&scope=${scope}`
+    passData.authAction = authAction
     passData.errorMessage = message || ''
     response.cookie(constants.request_session_key, reqSessionId)
     response.render('login.html', passData)

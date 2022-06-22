@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser")
 const sessions = require('express-session')
 const logger = require('./logger.js')
 const crypto = require('crypto')
+const helmet = require('helmet')
 
 //api controller
 const oauth2AuthorizeController = require('./web-api/oauth2-authorize-api.js')
@@ -22,12 +23,18 @@ app.set('views', path.join(__dirname, './web-view/'))
 app.use(sessions({
     secret: crypto.randomBytes(16).toString('base64'),
     saveUninitialized: true,
-    resave: false
+    resave: false,
+    cookie: {
+        // secure: true,
+        httpOnly: true,
+    }
 }))
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(express.static('./web'))
+app.use(express.static('./web-view/static'))
+
+app.use(helmet())
 
 // default api
 app.get('/', (req, res) => {
