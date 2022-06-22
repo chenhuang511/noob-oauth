@@ -1,6 +1,7 @@
 const clientDb = require('../repository/client-db.js')
 const realmDb = require('../repository/realm-db.js')
 const allowRedirectionDb = require('../repository/allow-redirection-db')
+const constants = require('../constants')
 const log = require('../logger.js')
 const crypto = require('crypto')
 
@@ -12,11 +13,20 @@ const create = async (realm, name, callback_url) => {
     if (!check || !check._id) throw new Error('realm is not valid')
 
     let roles = ['user', 'admin']
-    let scopes = ['username', 'profile'] // default scopes
+    let scope = constants.default_client_scope
+    let client_type = constants.default_client_type
     let client_secret = crypto.randomBytes(24).toString("base64")
     try {
         // create client
-        let _id = await clientDb.insert({client_id: name, client_secret, realm, callback_url, roles, scopes})
+        let _id = await clientDb.insert({
+            client_id: name,
+            client_secret,
+            realm,
+            callback_url,
+            roles,
+            scope,
+            client_type
+        })
         // create redirection configuration
         let url = new URL(callback_url)
         let domain = `${url.protocol}//${url.hostname}:${url.port}`

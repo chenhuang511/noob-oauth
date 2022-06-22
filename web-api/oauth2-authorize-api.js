@@ -7,6 +7,8 @@ let router = express.Router()
 
 const API_PREFIX = '/oauth2'
 
+const authStatus = authorizeProcessor.STATUS
+
 //authorize endpoint
 router.get('/:realm/authorize', async (req, res) => {
     let realm = req.params['realm']
@@ -18,20 +20,18 @@ router.get('/:realm/authorize', async (req, res) => {
     let serverSessionId = req.cookies[constants.server_session_key]
 
     let result = await authorizeProcessor.beforeAuthenticationProcess(realm, client_id, response_type, scope, state, httpSessionId, serverSessionId)
-    //if error, return json
-    if (result.status !== 0) {
-        res.json({error: result.message})
-        return
-    }
-    //without error
-    //case: redirect to client with authorization code
-    if (result.data.redirect_client) {
-        await callbackClient(res, result)
-        return
-    }
-    //case: display login page
-    if (result.data.redirect_login) {
-        await redirectToLogin(httpSessionId, res, realm, state, client_id, scope, result.message)
+
+    switch (result.status) {
+        case authStatus.error_with_login_redirect:
+        case authStatus.ok_with_login_redirect:
+            await redirectToLogin(httpSessionId, res, realm, state, client_id, scope, result.message)
+            break
+        case authStatus.error_with_return_client:
+            res.json(result.data)
+            break
+        case authStatus.ok_with_callback_client:
+            await callbackClient(res, result)
+            break
     }
 })
 
@@ -53,16 +53,17 @@ router.post('/:realm/authenticate', async (req, res) => {
     }
 
     let result = await authorizeProcessor.handleAuthenticationProcess(realm, client_id, username, password, scope, state, httpSessionId)
-    //in case error
-    if (result.status !== 0) {
-        res.render('login.html', {errorMessage: result.message})
-        return
-    }
-    //without error, redirect to client with authorization code
-    if (result.data.redirect_client) {
-        await callbackClient(res, result)
-    } else {
-        res.json({error: 'internal server error'})
+    switch (result.status) {
+        case authStatus.error_with_login_redirect:
+        case authStatus.ok_with_login_redirect:
+            await redirectToLogin(httpSessionId, res, realm, state, client_id, scope, result.message)
+            break
+        case authStatus.error_with_return_client:
+            res.json(result.data)
+            break
+        case authStatus.ok_with_callback_client:
+            await callbackClient(res, result)
+            break
     }
 })
 
