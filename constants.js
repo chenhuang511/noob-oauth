@@ -1,5 +1,8 @@
+const config = require('./config')
+
 module.exports = {
-    base_url: 'http://localhost:4000',
+    base_url: `http://localhost:${config.port}`,
+    oauth2_base_url: `http://localhost:${config.port}/oauth2`,
     server_session_key: 'noob-session',
     request_session_key: 'request-session',
     response_types_supported: ['code'],
@@ -46,5 +49,6 @@ bQIDAQAB
     jwt_expiry_seconds: 1800,
     token_type: 'Bearer',
     default_client_type: 'confidential',
-    default_client_scope: ['email', 'profile', 'username']
+    default_client_scope: ['email', 'profile'],
+    scopes_supported: ['email', 'profile', 'phone', 'roles', 'address']
 }

@@ -11,6 +11,7 @@ const helmet = require('helmet')
 const oauth2AuthorizeController = require('./web-api/oauth2-authorize-api.js')
 const oauth2TokenController = require('./web-api/oauth2-token-api.js')
 const oauth2LogoutController = require('./web-api/oauth2-logout-api.js')
+const oauth2MetadataController = require('./web-api/oauth2-metadata-api.js')
 
 const app = express()
 const PORT = 4000
@@ -53,6 +54,7 @@ app.get('/', (req, res) => {
 app.use('/oauth2', oauth2AuthorizeController)
 app.use('/oauth2', oauth2TokenController)
 app.use('/oauth2', oauth2LogoutController)
+app.use('/oauth2', oauth2MetadataController)
 
 // start app
 app.listen(PORT, () => {

@@ -25,7 +25,7 @@ const generateTokens = async (userSessionId, clientSessionId) => {
     let sid = userSession.http_session_id
     let sub = userId
     let azp = clientSession.client_id
-    let iss = constants.base_url + '/realms/' + userSession.realm
+    let iss = constants.oauth2_base_url + '/' + userSession.realm
     let typ = 'Bearer'
     let auth_time = userSession.authenticate_time
 
