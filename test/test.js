@@ -31,7 +31,7 @@ const testCreateClient = async () => {
     try {
         let r = await client.create(realmName, client_id, client_callback_url)
         console.log(`create client ok, client_id: ${client_id}, client_secret: ${r.client_secret}`)
-        let r2 = await client.create(realmName, client_id, client_callback_url)
+        let r2 = await client.create(realmName, client_id_2, client_callback_url_2)
         console.log(`create client ok, client_id: ${client_id_2}, client_secret: ${r2.client_secret}`)
         return r
     } catch (e) {

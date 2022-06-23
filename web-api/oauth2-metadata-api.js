@@ -8,4 +8,9 @@ router.get('/:realm/metadata', (req, res) => {
     res.json(metadata.getOAuth2Config(realm))
 })
 
+router.get('/:realm/certs', (req, res) => {
+    let realm = req.params['realm']
+    res.json(metadata.getCertConfig(realm))
+})
+
 module.exports = router
