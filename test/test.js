@@ -7,8 +7,11 @@ const tokenProcessor = require('../logic/oauth2/token-processor.js')
 
 const realmName = 'noob-realm'
 const client_id = 'noob-client'
-const client_callback_url = 'http://localhost:5080/login/oauth2/code/'
+const client_id_2 = 'smart-client'
+const client_callback_url = 'http://localhost:5080/login/oauth2/code/noob-client'
+const client_callback_url_2 = 'http://localhost:5081/login/oauth2/code/smart-client'
 const username = 'noob-user'
+const username2 = 'smart-user'
 const password = '123456'
 let http_session = crypto.randomUUID()
 
@@ -28,6 +31,8 @@ const testCreateClient = async () => {
     try {
         let r = await client.create(realmName, client_id, client_callback_url)
         console.log(`create client ok, client_id: ${client_id}, client_secret: ${r.client_secret}`)
+        let r2 = await client.create(realmName, client_id, client_callback_url)
+        console.log(`create client ok, client_id: ${client_id_2}, client_secret: ${r2.client_secret}`)
         return r
     } catch (e) {
         console.log(`create client err, _id = ${e}`)
@@ -40,6 +45,8 @@ const testCreateUser = async () => {
     try {
         let r = await user.create(realmName, username, password, [{noob_client: {roles: ['user']}}])
         console.log(`create user ok: ${r._id}`)
+        let r2 = await user.create(realmName, username2, password, [{smart_client: {roles: ['user']}}])
+        console.log(`create user ${username2} ok: ${r2._id}`)
     } catch (e) {
         console.log(`create user err, _id = ${e}`)
     }

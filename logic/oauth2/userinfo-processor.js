@@ -24,7 +24,7 @@ const getInfo = async (jwtToken) => {
             result.data = {error: 'invalid_token', error_description: 'Token verification failed'}
             return result
         }
-        const isRevoker = await token.verifyToken(decoded.jti)
+        const isRevoker = await token.isRevoked(decoded.jti)
         if (isRevoker) {
             result.status = STATUS.error
             result.data = {error: 'invalid_token', error_description: 'Token verification failed'}
