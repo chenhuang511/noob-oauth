@@ -8,10 +8,12 @@ const getOAuth2Config = (realm) => {
     let response_types_supported = constants.response_types_supported
     let grant_types_supported = constants.grant_types_supported
     let end_session_endpoint = constants.oauth2_base_url + `/${realm}/logout`
+    let userinfo_endpoint = constants.oauth2_base_url + `/${realm}/userinfo`
     return {
         issuer,
         authorization_endpoint,
         token_endpoint,
+        userinfo_endpoint,
         scopes_supported,
         response_types_supported,
         grant_types_supported,

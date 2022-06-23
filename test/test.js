@@ -6,9 +6,9 @@ const authorizeProcessor = require('../logic/oauth2/authorize-processor.js')
 const tokenProcessor = require('../logic/oauth2/token-processor.js')
 
 const realmName = 'noob-realm'
-const client_id = 'smart-client'
-const client_callback_url = 'http://localhost:3006/callback'
-const username = 'smart-user'
+const client_id = 'noob-client'
+const client_callback_url = 'http://localhost:5080/login/oauth2/code/'
+const username = 'noob-user'
 const password = '123456'
 let http_session = crypto.randomUUID()
 
@@ -113,7 +113,7 @@ const clear = async () => {
 
 const run = async () => {
     // await clear()
-    // await testCreateRealm()
+    await testCreateRealm()
     await testCreateClient()
     await testCreateUser()
     // let authorize1 = await testAuthorize()

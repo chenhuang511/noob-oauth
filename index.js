@@ -12,6 +12,7 @@ const oauth2AuthorizeController = require('./web-api/oauth2-authorize-api.js')
 const oauth2TokenController = require('./web-api/oauth2-token-api.js')
 const oauth2LogoutController = require('./web-api/oauth2-logout-api.js')
 const oauth2MetadataController = require('./web-api/oauth2-metadata-api.js')
+const oauth2UserInfoController = require('./web-api/oauth2-userinfo-api.js')
 
 const app = express()
 const PORT = 4000
@@ -55,6 +56,7 @@ app.use('/oauth2', oauth2AuthorizeController)
 app.use('/oauth2', oauth2TokenController)
 app.use('/oauth2', oauth2LogoutController)
 app.use('/oauth2', oauth2MetadataController)
+app.use('/oauth2', oauth2UserInfoController)
 
 // start app
 app.listen(PORT, () => {

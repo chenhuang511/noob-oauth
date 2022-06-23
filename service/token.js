@@ -124,7 +124,10 @@ const create = async (uuid, value, type, user_session_id, client_session_id) => 
 
 const isRevoked = async (id) => {
     let token = await tokenDb.findById(id)
-    if (!token || !token._id) throw new Error('Token not found')
+    if (!token || !token._id)
+        token = await tokenDb.findByUUID(id)
+    if (!token || !token._id)
+        throw new Error('Token not found')
     return token.is_revoked === 1
 }
 

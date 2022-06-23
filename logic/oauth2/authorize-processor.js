@@ -23,7 +23,7 @@ let ERROR_CODE = {
     temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.',
 }
 
-const beforeAuthenticationProcess = async (realm, client_id, response_type, scope, state, http_session, server_session = '') => {
+const beforeAuthenticationProcess = async (realm, client_id, response_type, scope, state, redirect_uri, http_session, server_session = '') => {
     let result = {status: STATUS.ok_with_login_redirect, message: '', data: {}}
     try {
         //validate client
@@ -54,7 +54,7 @@ const beforeAuthenticationProcess = async (realm, client_id, response_type, scop
         }
 
         if (server_session)
-            return await processWithSession(realm, client_id, server_session, scope, state, http_session)
+            return await processWithSession(realm, client_id, server_session, scope, state, redirect_uri, http_session)
         else {
             result.status = STATUS.ok_with_login_redirect
         }
@@ -67,7 +67,7 @@ const beforeAuthenticationProcess = async (realm, client_id, response_type, scop
     }
 }
 
-const processWithSession = async (realm, client_id, serverSession, scope, state, http_session) => {
+const processWithSession = async (realm, client_id, serverSession, scope, state, redirect_uri, http_session) => {
     let result = {status: STATUS.ok_with_login_redirect, message: '', data: {}}
     try {
         //validate server_session
@@ -97,10 +97,11 @@ const processWithSession = async (realm, client_id, serverSession, scope, state,
 
         //get client callback url
         let existClient = await client.exists(realm, client_id)
-        let callback_url = existClient.callback_url
+        let callback_url = redirect_uri || existClient.callback_url
 
         result.status = STATUS.ok_with_callback_client
         result.data = {
+            registered_id: existClient._id,
             callback_url,
             code,
             server_session: serverSession,
@@ -116,7 +117,7 @@ const processWithSession = async (realm, client_id, serverSession, scope, state,
     }
 }
 
-const handleAuthenticationProcess = async (realm, client_id, username, password, scope, state, http_session_id) => {
+const handleAuthenticationProcess = async (realm, client_id, username, password, scope, state, redirect_uri, http_session_id) => {
     let result = {status: STATUS.ok_with_login_redirect, message: '', data: {}}
     try {
         //authenticate user credentials
@@ -143,10 +144,11 @@ const handleAuthenticationProcess = async (realm, client_id, username, password,
 
         //get client callback url
         let existClient = await client.exists(realm, client_id)
-        let callback_url = existClient.callback_url
+        let callback_url = redirect_uri || existClient.callback_url
 
         result.status = STATUS.ok_with_callback_client
         result.data = {
+            registered_id: existClient._id,
             callback_url,
             code,
             server_session,

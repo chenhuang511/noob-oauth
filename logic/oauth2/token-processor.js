@@ -36,7 +36,7 @@ const process = async (realm, grant_type, client_id, client_secret, code, refres
             return result
         }
 
-        //check client credentials
+        // //check client credentials
         let checkClient = await client.authenticate(realm, client_id, client_secret)
         if (!checkClient) {
             result.status = STATUS.err_authenticate
@@ -60,7 +60,7 @@ const process = async (realm, grant_type, client_id, client_secret, code, refres
 const processWithAuthCode = async (code, client_id) => {
     let result = {status: STATUS.err, message: '', data: {}}
     try {
-        //check auth code
+        // check auth code
         let checkCode = await authCode.checkValidCode(code, client_id)
         if (!checkCode) {
             result.status = STATUS.err
