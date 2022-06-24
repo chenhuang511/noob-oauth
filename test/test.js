@@ -8,8 +8,15 @@ const tokenProcessor = require('../logic/oauth2/token-processor.js')
 const realmName = 'noob-realm'
 const client_id = 'noob-client'
 const client_id_2 = 'smart-client'
+const client_id_3 = 'net-client'
+const client_id_4 = 'java-client'
+const client_id_5 = 'php-client'
+const client_password_3 = 'IL45G3iLrHOfX/0Cu/aINMXVg1jUbzFT'
 const client_callback_url = 'http://localhost:5080/login/oauth2/code/noob-client'
 const client_callback_url_2 = 'http://localhost:5081/login/oauth2/code/smart-client'
+const client_callback_url_3 = 'https://netclient.vn:5001/authorization-code/callback'
+const client_callback_url_4 = 'http://javaclient.vn:5081/login/oauth2/code/java-client'
+const client_callback_url_5 = 'http://phpclient.vn:8885/callback.php'
 const username = 'noob-user'
 const username2 = 'smart-user'
 const password = '123456'
@@ -29,11 +36,13 @@ const testCreateRealm = async () => {
 const testCreateClient = async () => {
     console.log(`=====BEGIN TEST CLIENT=====\n`)
     try {
-        let r = await client.create(realmName, client_id, client_callback_url)
-        console.log(`create client ok, client_id: ${client_id}, client_secret: ${r.client_secret}`)
-        let r2 = await client.create(realmName, client_id_2, client_callback_url_2)
-        console.log(`create client ok, client_id: ${client_id_2}, client_secret: ${r2.client_secret}`)
-        return r
+        let r = await client.create(realmName, client_id_3, client_callback_url_3)
+        console.log(`create client ok, client_id: ${client_id_3}, client_secret: ${r.client_secret}`)
+        let r2 = await client.create(realmName, client_id_4, client_callback_url_4)
+        console.log(`create client ok, client_id: ${client_id_4}, client_secret: ${r2.client_secret}`)
+        let r3 = await client.create(realmName, client_id_5, client_callback_url_5)
+        console.log(`create client ok, client_id: ${client_id_5}, client_secret: ${r3.client_secret}`)
+        return r3
     } catch (e) {
         console.log(`create client err, _id = ${e}`)
     }
