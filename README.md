@@ -1,4 +1,5 @@
-#NoobAuth
+# NoobAuth
+
 This project is a simple OAuth2 implementation server in NodeJS, supports [authorization code](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-31#section-1.3.1) grant type only.
 
 NoobAuth supports Single Sign On (SSO) as well, some features are delivered based on my knowledge about [Keycloak](https://github.com/keycloak/keycloak).
@@ -19,7 +20,7 @@ You have to initialize realm, client and user before doing OAuth2 features. You 
 
 # OAuth2 implementation
 
-##Grant type 
+## Grant type 
 
 Authorization Code, if you want to implement other flows such as: Implicit, Client Credentials, Resource Owner Password Credentials, do it by yourself.
 
@@ -27,7 +28,7 @@ So ```grant_type``` supported are: ```authorization_code``` and ```refresh_token
 
 ```response_type``` supports only ```code``` (for ```authorize``` endpoint)
 
-##Endpoints
+## Endpoints
 
 * Authorize Endpoint: /oauth2/{realm}/authorize
 * Token Endpoint: /oauth2/{realm}/token
