@@ -38,9 +38,11 @@ const getCertConfig = (realm) => {
         let x5t = Buffer.from(x509cert.fingerprint.replace(/:/g, ''), 'hex').toString('base64')
         let x5tS256 = Buffer.from(x509cert.fingerprint256.replace(/:/g, ''), 'hex').toString('base64')
         let kid = x5t
-        let x5c = pemCert.replace('-----BEGIN CERTIFICATE-----', '')
+        let cert = pemCert.replace('-----BEGIN CERTIFICATE-----', '')
             .replace('-----END CERTIFICATE-----', '')
             .replace(/\r\n|\r|\n/g, '')
+        let x5c = []
+        x5c.push(cert)
         let alg = 'RS256'
         keys.push({kid, use: 'sig', kty, alg, n, e, x5c, x5t, 'x5t#S256': x5tS256})
     }

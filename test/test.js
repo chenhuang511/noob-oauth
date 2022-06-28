@@ -36,12 +36,12 @@ const testCreateRealm = async () => {
 const testCreateClient = async () => {
     console.log(`=====BEGIN TEST CLIENT=====\n`)
     try {
-        let r = await client.create(realmName, client_id_3, client_callback_url_3)
-        console.log(`create client ok, client_id: ${client_id_3}, client_secret: ${r.client_secret}`)
-        let r2 = await client.create(realmName, client_id_4, client_callback_url_4)
-        console.log(`create client ok, client_id: ${client_id_4}, client_secret: ${r2.client_secret}`)
-        let r3 = await client.create(realmName, client_id_5, client_callback_url_5)
-        console.log(`create client ok, client_id: ${client_id_5}, client_secret: ${r3.client_secret}`)
+        // let r = await client.create(realmName, client_id_3, client_callback_url_3)
+        // console.log(`create client ok, client_id: ${client_id_3}, client_secret: ${r.client_secret}`)
+        // let r2 = await client.create(realmName, client_id_4, client_callback_url_4)
+        // console.log(`create client ok, client_id: ${client_id_4}, client_secret: ${r2.client_secret}`)
+        let r3 = await client.create(realmName, 'java-client-2', 'http://127.0.0.1:6080/authorized')
+        console.log(`create client ok, client_id: java-client-2, client_secret: ${r3.client_secret}`)
         return r3
     } catch (e) {
         console.log(`create client err, _id = ${e}`)
@@ -129,9 +129,9 @@ const clear = async () => {
 
 const run = async () => {
     // await clear()
-    await testCreateRealm()
+    // await testCreateRealm()
     await testCreateClient()
-    await testCreateUser()
+    // await testCreateUser()
     // let authorize1 = await testAuthorize()
     // await testAuthorizeWithCookie(authorize1.data.server_session)
     // await testToken()
