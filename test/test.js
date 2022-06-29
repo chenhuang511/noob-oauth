@@ -11,12 +11,20 @@ const client_id_2 = 'smart-client'
 const client_id_3 = 'net-client'
 const client_id_4 = 'java-client'
 const client_id_5 = 'php-client'
+const client_id_6 = 'java-client-2'
+const client_name = 'noob-client.vn'
+const client_name_2 = 'smart-client'
+const client_name_3 = 'netclient.vn'
+const client_name_4 = 'javaclient.vn'
+const client_name_5 = 'phpclient.vn'
+const client_name_6 = 'http://127.0.0.1:6080'
 const client_password_3 = 'IL45G3iLrHOfX/0Cu/aINMXVg1jUbzFT'
 const client_callback_url = 'http://localhost:5080/login/oauth2/code/noob-client'
 const client_callback_url_2 = 'http://localhost:5081/login/oauth2/code/smart-client'
 const client_callback_url_3 = 'https://netclient.vn:5001/authorization-code/callback'
 const client_callback_url_4 = 'http://javaclient.vn:5081/login/oauth2/code/java-client'
 const client_callback_url_5 = 'http://phpclient.vn:8885/callback.php'
+const client_callback_url_6 = 'http://127.0.0.1:6080/login/oauth2/code/noob-client'
 const username = 'noob-user'
 const username2 = 'smart-user'
 const password = '123456'
@@ -36,13 +44,14 @@ const testCreateRealm = async () => {
 const testCreateClient = async () => {
     console.log(`=====BEGIN TEST CLIENT=====\n`)
     try {
-        // let r = await client.create(realmName, client_id_3, client_callback_url_3)
-        // console.log(`create client ok, client_id: ${client_id_3}, client_secret: ${r.client_secret}`)
-        // let r2 = await client.create(realmName, client_id_4, client_callback_url_4)
-        // console.log(`create client ok, client_id: ${client_id_4}, client_secret: ${r2.client_secret}`)
-        let r3 = await client.create(realmName, 'java-client-2', 'http://127.0.0.1:6080/authorized')
-        console.log(`create client ok, client_id: java-client-2, client_secret: ${r3.client_secret}`)
-        return r3
+        let r = await client.create(realmName, client_id_3, client_name_3, client_callback_url_3)
+        console.log(`create client ok, client_id: ${client_id_3}, client_secret: ${r.client_secret}`)
+        let r2 = await client.create(realmName, client_id_4, client_name_4, client_callback_url_4)
+        console.log(`create client ok, client_id: ${client_id_4}, client_secret: ${r2.client_secret}`)
+        let r3 = await client.create(realmName, client_id_5, client_name_5, client_callback_url_5)
+        console.log(`create client ok, client_id: ${client_id_5}, client_secret: ${r3.client_secret}`)
+        let r4 = await client.create(realmName, client_id_6, client_name_6, client_callback_url_6)
+        console.log(`create client ok, client_id: ${client_id_6}, client_secret: ${r4.client_secret}`)
     } catch (e) {
         console.log(`create client err, _id = ${e}`)
     }
@@ -127,11 +136,17 @@ const clear = async () => {
     console.log(`=====DONE CLEAR=====\n`)
 }
 
+const clearClient = async (client_id) => {
+    let r1 = await client.removeByClientId(client_id)
+    console.log(`remove ${r1} client`)
+}
+
 const run = async () => {
-    // await clear()
-    // await testCreateRealm()
+    await clear()
+    // await clearClient('java-client-2')
+    await testCreateRealm()
     await testCreateClient()
-    // await testCreateUser()
+    await testCreateUser()
     // let authorize1 = await testAuthorize()
     // await testAuthorizeWithCookie(authorize1.data.server_session)
     // await testToken()

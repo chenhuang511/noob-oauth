@@ -26,7 +26,8 @@ router.get('/:realm/authorize', async (req, res) => {
     switch (result.status) {
         case authStatus.error_with_login_redirect:
         case authStatus.ok_with_login_redirect:
-            await redirectToLogin(httpSessionId, res, realm, state, redirect_uri, client_id, scope, result.message)
+            await redirectToLogin(httpSessionId, res, realm, state, redirect_uri,
+                client_id, result.data.client_name, scope, result.message)
             break
         case authStatus.error_with_return_client:
             res.json(result.data)
@@ -70,7 +71,8 @@ router.post('/:realm/authenticate', async (req, res) => {
     }
 })
 
-const redirectToLogin = async (reqSessionId, response, realm, state, redirect_uri, client_id, scope, message) => {
+const redirectToLogin = async (reqSessionId, response, realm, state, redirect_uri,
+                               client_id, client_name, scope, message) => {
     let passData = {}
     let authAction = `${API_PREFIX}/${realm}/authenticate?client_id=${client_id}`
     if (state) authAction += `&state=${state}`
@@ -78,6 +80,7 @@ const redirectToLogin = async (reqSessionId, response, realm, state, redirect_ur
     if (redirect_uri) authAction += `&redirect_uri=${redirect_uri}`
     passData.authAction = authAction
     passData.errorMessage = message || ''
+    passData.clientName = client_name
     response.cookie(constants.request_session_key, reqSessionId)
     response.render('login.html', passData)
 }

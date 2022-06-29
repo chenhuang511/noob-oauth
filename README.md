@@ -28,12 +28,13 @@ NoobAuth supports Single Sign On (SSO) as well, some features are delivered base
 * ``server_session``: the cookie for user-agent (web browser), for SSO purpose. ```server_session = realm_name + request_http_session_id + authenticated_user_id```
 * ``metadata``: well-known configurations and key/cert information used.
 
-## Getting started
+# Getting started
 To run NoobAuth, from the root directory of this project, run:
 * ```npm install```
 * ```node index.js```
 
 You have to initialize realm, client and user before doing OAuth2 features. You can setup you environment with the ```test/test.js``` file:
+```node test/test.js```
 * ```testCreateRealm```, ```testCreateClient``` and ```testCreateUser``` are the basic functions can help.
 
 # OAuth2 implementation

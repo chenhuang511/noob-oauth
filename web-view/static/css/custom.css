@@ -48,8 +48,15 @@
 }
 
 .login-title {
-    color: #555;
-    font-size: 18px;
+    color: #222;
+    font-size: 22px;
+    font-weight: 600;
+    display: block;
+}
+
+.login-subtitle {
+    color: #444;
+    font-size: 16px;
     font-weight: 400;
     display: block;
 }

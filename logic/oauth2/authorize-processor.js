@@ -60,11 +60,11 @@ const beforeAuthenticationProcess = async (realm, client_id, response_type, scop
                 return result
             }
         }
-
         if (server_session)
             return await processWithSession(realm, client_id, server_session, scope, state, redirect_uri, http_session)
         else {
             result.status = STATUS.ok_with_login_redirect
+            result.data = {client_name: checkClient.name}
         }
         return result
     } catch (e) {
@@ -160,6 +160,7 @@ const handleAuthenticationProcess = async (realm, client_id, username, password,
         await authCode.create(code, client_id)
 
         //get client callback url
+        //TODO: need check the redirect_uri from request is match with URIs the client registered
         let existClient = await client.exists(realm, client_id)
         let callback_url = redirect_uri || existClient.callback_url
 

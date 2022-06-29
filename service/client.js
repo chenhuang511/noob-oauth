@@ -8,7 +8,7 @@ const crypto = require('crypto')
 //TODO: implement multiple redirect uris
 //TODO: implement TLS direct uri option for client
 
-const create = async (realm, name, callback_url) => {
+const create = async (realm, client_id, name, callback_url) => {
     if (!name) throw new Error('name is not valid')
     if (!callback_url || (!callback_url.startsWith('http://') && !callback_url.startsWith('https://')))
         throw new Error('callback_url is not valid')
@@ -22,7 +22,8 @@ const create = async (realm, name, callback_url) => {
     try {
         // create client
         let _id = await clientDb.insert({
-            client_id: name,
+            client_id,
+            name,
             client_secret,
             realm,
             callback_url,
