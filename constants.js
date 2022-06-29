@@ -1,3 +1,4 @@
+//TODO: should be a database table for dynamic configuration instead hard-code
 const config = require('./config')
 
 module.exports = {
@@ -66,6 +67,7 @@ khStJlKF
 -----END CERTIFICATE-----`,
     jwt_key_id: 'YRJaHrxJDZ+1WtIoerLsX5VsAwM=',
     jwt_expiry_seconds: 1800,
+    jwt_refresh_expiry_seconds: 25200,
     token_type: 'Bearer',
     default_client_type: 'confidential',
     default_client_scope: ['email', 'profile'],

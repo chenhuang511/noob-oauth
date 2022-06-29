@@ -37,6 +37,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static('./web-view/static'))
 
 // security configure
+//TODO: the domains from client redirect uris should be filtered, we should intercept depend on the registration information from all clients
 // app.use(helmet.contentSecurityPolicy({
 //     useDefaults: true,
 //     directives: {

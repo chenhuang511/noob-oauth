@@ -9,6 +9,9 @@ const STATUS = {
     err_authenticate: 2
 }
 
+/*
+    Follows OAuth2 v2-31, section 5.2 about error responses for access token request
+ */
 let ERROR_CODE = {
     invalid_request: `The request is missing a required parameter, includes an unsupported parameter value (other than grant type), repeats a parameter, includes multiple credentials, utilizes more than one mechanism for authenticating the client, or is otherwise malformed.`,
     invalid_client: 'Client authentication failed',
@@ -57,6 +60,9 @@ const process = async (realm, grant_type, client_id, client_secret, code, refres
     }
 }
 
+/*
+    In case obtain access token from the authorization code
+ */
 const processWithAuthCode = async (code, client_id) => {
     let result = {status: STATUS.err, message: '', data: {}}
     try {
@@ -88,6 +94,9 @@ const processWithAuthCode = async (code, client_id) => {
     }
 }
 
+/*
+    In case obtain access token from the refresh token
+ */
 const processWithRefreshToken = async (refresh_token) => {
     let result = {status: STATUS.err, message: '', data: {}}
     try {

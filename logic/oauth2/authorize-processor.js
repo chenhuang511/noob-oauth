@@ -1,3 +1,5 @@
+//TODO: need implement the authorization grant scopes confirmation in the authorized workflow
+// this step is the confirmation page before go to login page
 const constants = require('../../constants.js')
 const client = require('../../service/client.js')
 const user = require('../../service/user.js')
@@ -13,6 +15,9 @@ let STATUS = {
     error_with_return_client: 4
 }
 
+/*
+    Follows oauth v2-31, section 4.1.2.1, the specification about authorization error response
+ */
 let ERROR_CODE = {
     invalid_request: 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed',
     unauthorized_client: 'The client is not authorized to request an authorization code using this method.',
@@ -23,6 +28,9 @@ let ERROR_CODE = {
     temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.',
 }
 
+/*
+    When authorized request is called, validate request parameters and decide redirect user to login page or return authorization code directly to client
+ */
 const beforeAuthenticationProcess = async (realm, client_id, response_type, scope, state, redirect_uri, http_session, server_session = '') => {
     let result = {status: STATUS.ok_with_login_redirect, message: '', data: {}}
     try {
@@ -67,6 +75,10 @@ const beforeAuthenticationProcess = async (realm, client_id, response_type, scop
     }
 }
 
+/*
+    User-agent (web browsers) have server session within the requested cookies, so user does not need login to grant authorization,
+    the authorization code is returned instead
+ */
 const processWithSession = async (realm, client_id, serverSession, scope, state, redirect_uri, http_session) => {
     let result = {status: STATUS.ok_with_login_redirect, message: '', data: {}}
     try {
@@ -97,6 +109,8 @@ const processWithSession = async (realm, client_id, serverSession, scope, state,
 
         //get client callback url
         let existClient = await client.exists(realm, client_id)
+        //TODO: oauth v2-31, section 10.5:
+        // MUST validate the redirect_uri client provided in the authorize request is in the uri list client registered
         let callback_url = redirect_uri || existClient.callback_url
 
         result.status = STATUS.ok_with_callback_client
@@ -117,6 +131,9 @@ const processWithSession = async (realm, client_id, serverSession, scope, state,
     }
 }
 
+/*
+    Redirect user to login page for authorization grant
+ */
 const handleAuthenticationProcess = async (realm, client_id, username, password, scope, state, redirect_uri, http_session_id) => {
     let result = {status: STATUS.ok_with_login_redirect, message: '', data: {}}
     try {

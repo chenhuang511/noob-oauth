@@ -5,6 +5,9 @@ const constants = require('../constants')
 const log = require('../logger.js')
 const crypto = require('crypto')
 
+//TODO: implement multiple redirect uris
+//TODO: implement TLS direct uri option for client
+
 const create = async (realm, name, callback_url) => {
     if (!name) throw new Error('name is not valid')
     if (!callback_url || (!callback_url.startsWith('http://') && !callback_url.startsWith('https://')))

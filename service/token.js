@@ -57,14 +57,14 @@ const generateTokens = async (userSessionId, clientSessionId) => {
     let refreshTokenPayload = {auth_time, jti, iss, sub, typ, azp, session_state, sid, preferred_username}
     let refresh_token = jwt.sign(refreshTokenPayload, constants.jwt_private_key, {
         algorithm: 'RS256',
-        expiresIn: constants.jwt_expiry_seconds
+        expiresIn: constants.jwt_refresh_expiry_seconds
     })
     //store into db
     let refresh_token_id = await create(jti, refresh_token, 'refresh_token', userSessionId, clientSessionId)
     return {
         access_token,
         expires_in: constants.jwt_expiry_seconds,
-        refresh_expires_in: constants.jwt_expiry_seconds,
+        refresh_expires_in: constants.jwt_refresh_expiry_seconds,
         refresh_token,
         // access_token_id,
         // refresh_token_id,

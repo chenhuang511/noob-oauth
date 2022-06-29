@@ -1,3 +1,7 @@
+//TODO: logout process is the Openid Connect context (not OAuth2),
+// so need implement the id_token_hint in the logout request
+// and normalize the request queries
+
 const userSession = require('../../service/user-session.js')
 
 const confirmLogout = async (realm, serverSession) => {

@@ -1,3 +1,5 @@
+//TODO: implement a distributed database, such as MariaDB
+
 const Datastore = require('nedb')
 const logger = require('../logger.js')
 let db = new Datastore({filename: './data/noob-auth.db', autoload: true})
