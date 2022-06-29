@@ -10,6 +10,24 @@ NoobAuth supports Single Sign On (SSO) as well, some features are delivered base
 * EJS is the view engine, we need for login/logout views.
 * [Nedb](https://github.com/louischatriot/nedb) - the embedded database - is used for fast and simple development. If you want to use a different database, you can adapt by changing code in the ```repositiory``` directory.
 
+## Basic concepts
+
+![basic entities](https://www.linkpicture.com/q/entities.png)
+
+* ``realm``: the top entity that users, clients are belonged to; has its own configurations
+* ``user``: resource owner
+* ``client``: client (webapp, native app, SPA app,...)
+* ``user_session``: holds user's authorization grant, for SSO purpose
+* ``client_session``: holds client's authorized request, for SSO purpose
+* ``access_token``: jwt, generate with RS256 algorithm
+* ``refresh_token``: revoke immediately after using
+* ``auth_code``: authorization code granted to client. ```auth_code = request_http_session_id + user_session_id + client_session_id```
+
+### Other entities
+
+* ``server_session``: the cookie for user-agent (web browser), for SSO purpose. ```server_session = realm_name + request_http_session_id + authenticated_user_id```
+* ``metadata``: well-known configurations and key/cert information used.
+
 ## Getting started
 To run NoobAuth, from the root directory of this project, run:
 * ```npm install```
@@ -49,6 +67,14 @@ Checkout:
 * Java (Spring-boot application): [noobauth-java-client](https://github.com/chenhuang511/noobauth-java-client)
 * NetCore: [noobauth-net-client](https://github.com/chenhuang511/noobauth-net-client)
 * PHP: [noobauth-php-client](https://github.com/chenhuang511/noobauth-php-client)
+
+# TODOs
+
+* Implement with a distributed database server, for high availability support, such as: MariaDB;
+* ``force_tls`` as a client option, for secured redirections.
+* ``Authorized workflow``: Display a page show access request from clients. Users have to confirm here before go to the login page.
+* ``Management APIs`` for realms, configurations, clients management.
+* ``Idp APIs`` for users, roles, scopes management.
 
 # License
 MIT
