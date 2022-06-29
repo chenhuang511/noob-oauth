@@ -1,3 +1,4 @@
+//TODO: need implement management users, for example need 'user_type' to distinguish between management users and resource owners
 const userDb = require('../repository/user-db.js')
 const realmDb = require('../repository/realm-db.js')
 const crypto = require('crypto')
